@@ -4,3 +4,8 @@
 - C compiler
 - libcurl
 
+## dpm spectification (7z)
+- bin folder
+- lib folder
+- DEPENDS
+

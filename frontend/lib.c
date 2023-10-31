@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 #include <curl/curl.h>
 
 #define URL "https://dpkg.ny64.kr"
@@ -40,8 +42,46 @@ int pkg_install(char* package) {
   if (downloadFile(url, output) == 1) {
     return 1;
   };
-
+  free(url);
+  free(output);
+  return 0;
 }
 
+int pkg_search(char *package) {
+  char* url = (char*)malloc(sizeof(URL)+7);
+  char* output = (char*)malloc(5);
+  sprintf(url, "%s/files", URL);
+  sprintf(url, "files");
 
+  if (downloadFile(url, output) == 1) {
+    return 1;
+  }
+  free(url);
+  free(output);
 
+  FILE* file = fopen("files", "r");
+  if (file == NULL) {
+    return 2;
+  }
+
+  while(!feof(file)) {
+    char* line = (char*)malloc(100);
+    fgets(line, 100, file);
+    if (strstr(line, package) != NULL) {
+      printf("%s", line);
+    }
+    free(line);
+  }
+  return 0;
+}
+
+int pkg_remove(char *package) {
+  char* packagedpm = (char*)malloc(sizeof(package) + 4);
+
+  if (fopen("packagedpm", "w") == NULL) {
+    return -1;
+  }
+  // bin remove thing
+  free(packagedpm);
+  return 0;
+}
