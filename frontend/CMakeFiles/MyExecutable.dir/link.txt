@@ -1,0 +1,1 @@
+/usr/bin/cc CMakeFiles/MyExecutable.dir/lib.c.o CMakeFiles/MyExecutable.dir/microtar/src/microtar.c.o CMakeFiles/MyExecutable.dir/main.c.o -o MyExecutable  /usr/lib64/libcurl.so 

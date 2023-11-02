@@ -1,0 +1,3 @@
+/home/misile/dpkgpromax/frontend/CMakeFiles/MyExecutable.dir
+/home/misile/dpkgpromax/frontend/CMakeFiles/edit_cache.dir
+/home/misile/dpkgpromax/frontend/CMakeFiles/rebuild_cache.dir
