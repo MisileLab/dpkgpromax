@@ -3,8 +3,9 @@
 ## Requirements
 - C compiler
 - libcurl
+- libarchive
 
-## dpm spectification (7z)
+## dpm spectification (tar)
 - bin folder
 - lib folder
 - DEPENDS

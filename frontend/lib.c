@@ -5,6 +5,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <errno.h>
 
 #include "microtar/src/microtar.h"
 #include <curl/curl.h>
@@ -72,10 +73,12 @@ int decompressTar(const char *tarFile, const char *outputDir) {
   }
 
   // Iterate through the tar archive and extract files
-  while (mtar_read_header(&mtar, &header) == MTAR_ESUCCESS) {
+  while (mtar_read_header(&mtar, &header) != MTAR_ENULLRECORD) {
     // Construct the output file path
     char outputFilePath[PATH_MAX];
     snprintf(outputFilePath, PATH_MAX, "%s/%s", outputDir, header.name);
+    printf("%s\n", header.name);
+  //printf(outputFilePath);
 
     // Create the directory structure if it doesn't exist
     char *last_slash = strrchr(outputFilePath, '/');
@@ -86,10 +89,18 @@ int decompressTar(const char *tarFile, const char *outputDir) {
     }
 
     // Open the output file for writing
-    FILE *outFile = fopen(outputFilePath, "wb");
+    DIR* dir = opendir(outputFilePath);
+    if (dir) {fprintf(stderr, "it's folder: %s\n", outputFilePath);continue;} else if (ENONET == errno) {printf("create a file cause not found");mkdir(outputFilePath, 0777);continue;}
+    
+    FILE *outFile = fopen(outputFilePath, "wb+");
     if (!outFile) {
       fprintf(stderr, "Failed to open output file: %s\n", outputFilePath);
-      mtar_close(&mtar);
+      fprintf(stderr, "Trying to use alternative way\n");
+      FILE *outFile = fopen(outputFilePath, "wb");
+      if (!outFile) {
+        fprintf(stderr, "Failed to open output file: %s\n", outputFilePath);
+        mtar_close(&mtar);
+      }
       return 1;
     }
 
@@ -155,6 +166,21 @@ int downloadFile(const char *url, const char *output_filename) {
   return 0;
 }
 
+void create_folder(const char* folder_name) {
+    struct stat st;
+
+    if (stat(folder_name, &st) == -1) {
+        // The folder doesn't exist, create it
+        if (mkdir(folder_name, 0777) == 0) {
+            printf("Folder '%s' created successfully.\n", folder_name);
+        } else {
+            perror("Error creating folder");
+        }
+    } else {
+        printf("Folder '%s' already exists.\n", folder_name);
+    }
+}
+
 int pkg_install(char *package) {
   char *url = (char *)malloc(sizeof(package) + sizeof(URL) + 6);
   char *output = (char *)malloc(sizeof(package) + 4);
@@ -162,16 +188,30 @@ int pkg_install(char *package) {
   sprintf(output, "%s.dpm", package);
 
   if (downloadFile(url, output) == 1) {
+    fprintf(stderr, "Failed to download file %s\n", url);
     return 1;
   };
   free(url);
 
   FILE *f = fopen(output, "r");
   if (f == NULL) {
+    fprintf(stderr, "Failed to open file %s\n", output);
     return 2;
   }
 
-  if (decompressTar(output, package) != 0) {
+  char *outputa = (char *)malloc(sizeof(package) + 4);
+  sprintf(outputa, "%s", package);
+
+  create_folder(outputa);
+  char *output2 = (char *)malloc(sizeof(package) + 9);
+  char *output3 = (char *)malloc(sizeof(package) + 9);
+  sprintf(output2, "%s/lib", outputa);
+  sprintf(output3, "%s/bin", outputa);
+  create_folder(output2);
+  create_folder(output3);
+
+  if (decompressTar(output, outputa) != 0) {
+    fprintf(stderr, "Failed to decompress file %s\n", output);
     return 3;
   }
 
@@ -185,6 +225,7 @@ int pkg_install(char *package) {
     char *line = (char *)malloc(MAX);
     fgets(line, MAX, dependf);
     if (realloc(dependencies, sizeof(dependencies) + sizeof(line)) == NULL) {
+      fprintf(stderr, "Failed to allocate memory\n");
       return 1;
     }
     dependencies[sizeof(dependencies) / MAX] = line;
@@ -204,12 +245,14 @@ char pkg_search(char *package) {
   sprintf(url, "%s/files", URL);
 
   if (downloadFile(url, "files") == 1) {
+    fprintf(stderr, "Failed to download file %s\n", url);
     return 1;
   }
   free(url);
 
   FILE *file = fopen("files", "r");
   if (file == NULL) {
+    fprintf(stderr, "Failed to open file %s\n", "files");
     return 2;
   }
 
@@ -222,6 +265,7 @@ char pkg_search(char *package) {
     }
     free(line);
   }
+  fprintf(stderr, "Package not found\n");
   return -1;
 }
 
@@ -230,6 +274,7 @@ int pkg_remove(char *package) {
   packagedpm = strcat(package, ".dpm");
 
   if (fopen(packagedpm, "w") == NULL) {
+    fprintf(stderr, "Failed to open file %s\n", packagedpm);
     return -1;
   }
 

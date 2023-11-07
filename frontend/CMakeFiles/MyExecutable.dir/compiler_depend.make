@@ -5,10 +5,13 @@ CMakeFiles/MyExecutable.dir/lib.c.o: lib.c \
   microtar/src/microtar.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
+  /usr/include/asm-generic/errno-base.h \
+  /usr/include/asm-generic/errno.h \
   /usr/include/asm-generic/posix_types.h \
   /usr/include/asm-generic/socket.h \
   /usr/include/asm-generic/sockios.h \
   /usr/include/asm/bitsperlong.h \
+  /usr/include/asm/errno.h \
   /usr/include/asm/posix_types.h \
   /usr/include/asm/posix_types_64.h \
   /usr/include/asm/socket.h \
@@ -19,6 +22,7 @@ CMakeFiles/MyExecutable.dir/lib.c.o: lib.c \
   /usr/include/bits/dirent_ext.h \
   /usr/include/bits/endian.h \
   /usr/include/bits/endianness.h \
+  /usr/include/bits/errno.h \
   /usr/include/bits/floatn-common.h \
   /usr/include/bits/floatn.h \
   /usr/include/bits/libc-header-start.h \
@@ -84,12 +88,14 @@ CMakeFiles/MyExecutable.dir/lib.c.o: lib.c \
   /usr/include/curl/websockets.h \
   /usr/include/dirent.h \
   /usr/include/endian.h \
+  /usr/include/errno.h \
   /usr/include/features-time64.h \
   /usr/include/features.h \
   /usr/include/ftw.h \
   /usr/include/gnu/stubs-64.h \
   /usr/include/gnu/stubs.h \
   /usr/include/limits.h \
+  /usr/include/linux/errno.h \
   /usr/include/linux/limits.h \
   /usr/include/linux/posix_types.h \
   /usr/include/linux/stddef.h \
@@ -225,9 +231,17 @@ lib.h:
 
 /usr/include/sys/cdefs.h:
 
-/usr/include/bits/stat.h:
+main.c:
 
-/usr/include/strings.h:
+/usr/include/stdlib.h:
+
+/usr/include/stdio.h:
+
+/usr/include/stdc-predef.h:
+
+/usr/include/linux/stddef.h:
+
+/usr/include/linux/errno.h:
 
 /usr/include/dirent.h:
 
@@ -240,6 +254,10 @@ lib.h:
 /usr/include/bits/endianness.h:
 
 /usr/include/features-time64.h:
+
+/usr/include/bits/types/clockid_t.h:
+
+/usr/include/errno.h:
 
 /usr/include/curl/urlapi.h:
 
@@ -275,8 +293,6 @@ microtar/src/microtar.c:
 
 /usr/include/bits/types/struct_tm.h:
 
-/usr/include/bits/types/struct_timeval.h:
-
 /usr/include/bits/types/struct_osockaddr.h:
 
 /usr/include/bits/pthread_stack_min.h:
@@ -295,27 +311,27 @@ microtar/src/microtar.c:
 
 /usr/include/bits/types/cookie_io_functions_t.h:
 
-/usr/include/bits/types/clockid_t.h:
-
 /usr/include/bits/types/__mbstate_t.h:
 
 /usr/include/curl/header.h:
 
 /usr/include/bits/types/__fpos_t.h:
 
+/usr/include/bits/typesizes.h:
+
+/usr/include/bits/types/locale_t.h:
+
+/usr/include/bits/types/__FILE.h:
+
 /usr/include/bits/types/FILE.h:
 
-/usr/include/ftw.h:
+/usr/include/sys/time.h:
 
-/usr/include/bits/stdlib-float.h:
+/usr/include/bits/uintn-identity.h:
 
-/usr/include/bits/timesize.h:
+/usr/include/bits/types.h:
 
 /usr/include/bits/time64.h:
-
-main.c:
-
-/usr/include/stdlib.h:
 
 /usr/include/bits/time.h:
 
@@ -327,11 +343,13 @@ main.c:
 
 /usr/include/bits/sockaddr.h:
 
-/usr/include/stdc-predef.h:
-
 /usr/include/string.h:
 
 /usr/include/bits/select.h:
+
+/usr/include/bits/stdlib-float.h:
+
+/usr/include/ftw.h:
 
 /usr/include/bits/atomic_wide_counter.h:
 
@@ -339,85 +357,71 @@ main.c:
 
 /usr/include/bits/thread-shared-types.h:
 
+/usr/include/asm/errno.h:
+
+/usr/include/bits/long-double.h:
+
+/usr/include/linux/limits.h:
+
+/usr/include/asm/sockios.h:
+
+/usr/include/curl/options.h:
+
+/usr/include/bits/local_lim.h:
+
+/usr/include/asm/socket.h:
+
+/usr/include/asm-generic/posix_types.h:
+
+/usr/include/bits/errno.h:
+
+/usr/include/bits/floatn.h:
+
+/usr/include/asm/posix_types_64.h:
+
+/usr/include/bits/libc-header-start.h:
+
+/usr/include/asm/posix_types.h:
+
+/usr/include/bits/waitstatus.h:
+
+/usr/include/bits/types/__locale_t.h:
+
+/usr/include/bits/posix1_lim.h:
+
+/usr/include/bits/socket.h:
+
+/usr/include/strings.h:
+
+/usr/include/bits/stat.h:
+
+/usr/include/asm-generic/sockios.h:
+
+/usr/include/asm-generic/socket.h:
+
+/usr/include/bits/endian.h:
+
 /usr/include/bits/types/time_t.h:
 
 /usr/include/bits/dirent_ext.h:
 
 /usr/include/bits/pthread_stack_min-dynamic.h:
 
-/usr/include/linux/stddef.h:
+/usr/include/asm-generic/errno-base.h:
 
-/usr/include/bits/local_lim.h:
-
-/usr/include/curl/options.h:
-
-/usr/include/sys/time.h:
-
-/usr/include/bits/uintn-identity.h:
-
-/usr/include/bits/types.h:
-
-/usr/include/linux/limits.h:
-
-/usr/include/asm/sockios.h:
-
-/usr/include/bits/floatn.h:
-
-/usr/include/bits/typesizes.h:
-
-/usr/include/bits/types/locale_t.h:
-
-/usr/include/bits/types/__FILE.h:
-
-/usr/include/bits/types/__sigset_t.h:
-
-/usr/include/bits/dirent.h:
-
-/usr/include/bits/struct_mutex.h:
-
-/usr/include/asm-generic/bitsperlong.h:
-
-/usr/include/bits/pthreadtypes.h:
-
-/usr/include/bits/waitstatus.h:
-
-/usr/include/bits/types/__locale_t.h:
-
-/usr/include/bits/socket.h:
-
-/usr/include/bits/posix1_lim.h:
+/usr/include/bits/types/struct_timeval.h:
 
 microtar/src/microtar.h:
 
-/usr/include/bits/libc-header-start.h:
-
-/usr/include/asm/posix_types_64.h:
-
-/usr/include/bits/byteswap.h:
-
-/usr/include/bits/socket_type.h:
-
-/usr/include/asm/socket.h:
-
-/usr/include/asm-generic/posix_types.h:
-
-/usr/include/bits/endian.h:
-
-lib.c:
-
-/usr/include/asm-generic/sockios.h:
-
-/usr/include/asm-generic/socket.h:
-
-/usr/include/asm/posix_types.h:
-
-/usr/include/bits/long-double.h:
+/usr/include/asm-generic/errno.h:
 
 /usr/include/bits/floatn-common.h:
 
 /usr/include/bits/stdint-intn.h:
 
-/usr/include/stdio.h:
+/usr/include/bits/struct_mutex.h:
+
+/usr/include/bits/dirent.h:
 
 /usr/include/bits/types/struct_FILE.h:
 
@@ -425,4 +429,18 @@ lib.c:
 
 /usr/include/bits/types/struct_iovec.h:
 
+/usr/include/bits/pthreadtypes.h:
+
+/usr/include/asm-generic/bitsperlong.h:
+
 /usr/include/asm/bitsperlong.h:
+
+/usr/include/bits/types/__sigset_t.h:
+
+/usr/include/bits/timesize.h:
+
+/usr/include/bits/byteswap.h:
+
+/usr/include/bits/socket_type.h:
+
+lib.c:
