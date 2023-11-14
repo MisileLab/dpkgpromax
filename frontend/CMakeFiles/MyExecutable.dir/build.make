@@ -125,6 +125,7 @@ MyExecutable: CMakeFiles/MyExecutable.dir/microtar/src/microtar.c.o
 MyExecutable: CMakeFiles/MyExecutable.dir/main.c.o
 MyExecutable: CMakeFiles/MyExecutable.dir/build.make
 MyExecutable: /usr/lib64/libcurl.so
+MyExecutable: /usr/lib64/libarchive.so
 MyExecutable: CMakeFiles/MyExecutable.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/misile/dpkgpromax/frontend/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking C executable MyExecutable"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/MyExecutable.dir/link.txt --verbose=$(VERBOSE)

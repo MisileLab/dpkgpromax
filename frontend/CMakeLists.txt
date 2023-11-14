@@ -14,9 +14,13 @@ target_include_directories(MyExecutable PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/microtar/src  # Include microtar's src directory
 )
 
-# Link the libcurl library
+# Find and link libcurl
 find_package(CURL REQUIRED)
 target_link_libraries(MyExecutable PRIVATE CURL::libcurl)
+
+# Find and link libarchive
+find_package(LibArchive REQUIRED)
+target_link_libraries(MyExecutable PRIVATE LibArchive::LibArchive)
 
 # Optionally, set any compiler flags or other configurations here
 # For example:

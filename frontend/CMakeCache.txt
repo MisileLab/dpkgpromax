@@ -227,6 +227,12 @@ CURL_LIBRARY_DEBUG:FILEPATH=CURL_LIBRARY_DEBUG-NOTFOUND
 //Path to a library.
 CURL_LIBRARY_RELEASE:FILEPATH=/usr/lib64/libcurl.so
 
+//libarchive include directory
+LibArchive_INCLUDE_DIR:PATH=/usr/include
+
+//libarchive library
+LibArchive_LIBRARY:FILEPATH=/usr/lib64/libarchive.so
+
 //Value Computed by CMake
 MyProject_BINARY_DIR:STATIC=/home/misile/dpkgpromax/frontend
 
@@ -407,6 +413,12 @@ CURL_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
 CURL_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
 //Details about finding CURL
 FIND_PACKAGE_MESSAGE_DETAILS_CURL:INTERNAL=[/usr/lib64/libcurl.so][/usr/include][c ][v8.4.0()]
+//Details about finding LibArchive
+FIND_PACKAGE_MESSAGE_DETAILS_LibArchive:INTERNAL=[/usr/lib64/libarchive.so][/usr/include][v3.7.2()]
+//ADVANCED property for variable: LibArchive_INCLUDE_DIR
+LibArchive_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: LibArchive_LIBRARY
+LibArchive_LIBRARY-ADVANCED:INTERNAL=1
 PC_CURL_CFLAGS:INTERNAL=
 PC_CURL_CFLAGS_I:INTERNAL=
 PC_CURL_CFLAGS_OTHER:INTERNAL=

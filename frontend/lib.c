@@ -5,137 +5,96 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <errno.h>
-
-#include "microtar/src/microtar.h"
 #include <curl/curl.h>
+
+#ifdef _WIN32
+#include <Windows.h>
+#define REMOVE_COMMAND "del"
+#define PATH_SEPARATOR "\\"
+#else
+#include <unistd.h>
+#define REMOVE_COMMAND "rm"
+#define PATH_SEPARATOR "/"
+#endif
+
+#ifdef _WIN32
+#include <Windows.h>
+#define MOVE_COMMAND "move"
+#else
+#include <unistd.h>
+#include <string.h>
+#define MOVE_COMMAND "mv"
+#endif
 
 #define URL "https://dpkgpromax.misilelaboratory.xyz"
 #define MAX 100
 
+#ifdef _WIN32
+#include <Windows.h>
+#define PATH_SEPARATOR "\\"
+#else
+#include <unistd.h>
+#endif
+
 int fileExists(const char *filename) {
-    struct stat buffer;
-    return (stat(filename, &buffer) == 0);
+#ifdef _WIN32
+    DWORD attrib = GetFileAttributes(filename);
+    return (attrib != INVALID_FILE_ATTRIBUTES && !(attrib & FILE_ATTRIBUTE_DIRECTORY));
+#else
+    return access(filename, F_OK) != -1;
+#endif
 }
 
-int removeIfSameName(const char *srcDir, const char *destDir) {
-    int flag = 0;
+void removeBinaryIfExists(const char* binaryName, const char* installPath) {
+    char fullPath[256];
+    snprintf(fullPath, sizeof(fullPath), "%s%s%s", installPath, PATH_SEPARATOR, binaryName);
+    printf("%s\nz", fullPath);
 
-    DIR *dir;
-    struct dirent *entry;
-
-    if ((dir = opendir(srcDir)) == NULL) {
-        perror("Error opening source directory");
-        return 1; // Error
-    }
-
-    while ((entry = readdir(dir)) != NULL) {
-        if (entry->d_type == DT_REG) {
-            char srcPath[PATH_MAX];
-            snprintf(srcPath, PATH_MAX, "%s/%s", srcDir, entry->d_name);
-
-            char destPath[PATH_MAX];
-            snprintf(destPath, PATH_MAX, "%s/%s", destDir, entry->d_name);
-
-            if (fileExists(destPath)) {
-                printf("File %s exists in %s. Do you want to remove it? (y/n): ", entry->d_name, destDir);
-                char confirmation;
-                scanf(" %c", &confirmation);
-
-                if (confirmation == 'y' || confirmation == 'Y') {
-                    if (remove(destPath) == 0) {
-                        printf("Removed file %s in %s.\n", entry->d_name, destDir);
-                    } else {
-                        perror("Error removing the file");
-                        flag = 1;
-                    }
-                } else {
-                    printf("No action taken for file %s in %s.\n", entry->d_name, destDir);
-                }
-            } else {
-                printf("The file %s doesn't exist in %s. No action taken.\n", entry->d_name, destDir);
-            }
+    if (fileExists(fullPath)) {
+#ifdef _WIN32
+        // Use Windows API to remove file
+        if (DeleteFile(fullPath) == 0) {
+            perror("Removal failed");
+            exit(EXIT_FAILURE);
         }
-    }
+#else
+        // Use UNIX command to remove file
+        char removeCommand[256];
+        snprintf(removeCommand, sizeof(removeCommand), "rm %s", fullPath);
 
-    closedir(dir);
-    return flag; // 0 on success, 1 if there were errors
+        int removeStatus = system(removeCommand);
+
+        if (removeStatus == -1) {
+            perror("Removal failed");
+            exit(EXIT_FAILURE);
+        }
+#endif
+        printf("Binary '%s' removed successfully!\n", binaryName);
+    } else {
+        printf("Binary '%s' not found.\n", binaryName);
+    }
 }
 
-int decompressTar(const char *tarFile, const char *outputDir) {
-  mtar_t mtar;
-  mtar_header_t header;
-
-  // Open the tar archive for reading
-  if (mtar_open(&mtar, tarFile, "r") != MTAR_ESUCCESS) {
-    fprintf(stderr, "Failed to open the tar archive: %s\n", tarFile);
-    return 1;
-  }
-
-  // Iterate through the tar archive and extract files
-  while (mtar_read_header(&mtar, &header) != MTAR_ENULLRECORD) {
-    // Construct the output file path
-    char outputFilePath[PATH_MAX];
-    snprintf(outputFilePath, PATH_MAX, "%s/%s", outputDir, header.name);
-    printf("%s\n", header.name);
-  //printf(outputFilePath);
-
-    // Create the directory structure if it doesn't exist
-    char *last_slash = strrchr(outputFilePath, '/');
-    if (last_slash) {
-      *last_slash = '\0';
-      mkdir(outputFilePath, 0755);
-      *last_slash = '/';
-    }
-
-    // Open the output file for writing
-    DIR* dir = opendir(outputFilePath);
-    if (dir) {fprintf(stderr, "it's folder: %s\n", outputFilePath);continue;} else if (ENONET == errno) {printf("create a file cause not found");mkdir(outputFilePath, 0777);continue;}
+void installBinary(const char* binaryPath) {
+    char moveCommand[100];
     
-    FILE *outFile = fopen(outputFilePath, "wb+");
-    if (!outFile) {
-      fprintf(stderr, "Failed to open output file: %s\n", outputFilePath);
-      fprintf(stderr, "Trying to use alternative way\n");
-      FILE *outFile = fopen(outputFilePath, "wb");
-      if (!outFile) {
-        fprintf(stderr, "Failed to open output file: %s\n", outputFilePath);
-        mtar_close(&mtar);
-      }
-      return 1;
+#ifdef _WIN32
+    snprintf(moveCommand, sizeof(moveCommand), "%s \"%s\" \"C:\\Program Files\\YourApp\\\"", MOVE_COMMAND, binaryPath);
+#else
+    snprintf(moveCommand, sizeof(moveCommand), "%s \"%s\" /usr/local/bin/", MOVE_COMMAND, binaryPath);
+    char* command = (char*)malloc(sizeof(binaryPath) + 50);
+    sprintf(command, "chmod a+x %s", binaryPath);
+    system(command);
+#endif
+
+    int moveStatus = system(moveCommand);
+
+    if (moveStatus == -1) {
+        perror("Move failed");
+        exit(EXIT_FAILURE);
     }
 
-    // Extract the file
-    if (mtar_read_data(&mtar, outFile, header.size) != MTAR_ESUCCESS) {
-      fprintf(stderr, "Failed to extract file: %s\n", header.name);
-      fclose(outFile);
-      mtar_close(&mtar);
-      return 1;
-    }
-
-    // Close the output file
-    fclose(outFile);
-  }
-
-  // Close the tar archive
-  mtar_close(&mtar);
-
-  return 0;
-}
-
-void moveFilesToSystemDirs() {
-  int status;
-
-  // Move the contents of the 'lib' directory to '/usr/lib'
-  status = system("cp lib/* /usr/lib/");
-  if (status == -1) {
-    perror("Error moving files to /usr/lib");
-  }
-
-  // Move the contents of the 'bin' directory to '/usr/bin'
-  status = system("cp bin/* /usr/bin/");
-  if (status == -1) {
-    perror("Error moving files to /usr/bin");
-  }
+    printf("Binary installed successfully!\n");
 }
 
 int downloadFile(const char *url, const char *output_filename) {
@@ -184,58 +143,15 @@ void create_folder(const char* folder_name) {
 int pkg_install(char *package) {
   char *url = (char *)malloc(sizeof(package) + sizeof(URL) + 6);
   char *output = (char *)malloc(sizeof(package) + 4);
-  sprintf(url, "%s/%s.dpm", URL, package);
-  sprintf(output, "%s.dpm", package);
+  sprintf(url, "%s/%s", URL, package);
+  sprintf(output, "%s", package);
 
   if (downloadFile(url, output) == 1) {
     fprintf(stderr, "Failed to download file %s\n", url);
     return 1;
   };
   free(url);
-
-  FILE *f = fopen(output, "r");
-  if (f == NULL) {
-    fprintf(stderr, "Failed to open file %s\n", output);
-    return 2;
-  }
-
-  char *outputa = (char *)malloc(sizeof(package) + 4);
-  sprintf(outputa, "%s", package);
-
-  create_folder(outputa);
-  char *output2 = (char *)malloc(sizeof(package) + 9);
-  char *output3 = (char *)malloc(sizeof(package) + 9);
-  sprintf(output2, "%s/lib", outputa);
-  sprintf(output3, "%s/bin", outputa);
-  create_folder(output2);
-  create_folder(output3);
-
-  if (decompressTar(output, outputa) != 0) {
-    fprintf(stderr, "Failed to decompress file %s\n", output);
-    return 3;
-  }
-
-  char *pkgdepend = (char *)malloc(sizeof(package) + 20);
-  sprintf(pkgdepend, "%s/DEPENDS", package);
-
-  FILE *dependf = fopen(pkgdepend, "r");
-  char **dependencies;
-
-  while (!feof(dependf)) {
-    char *line = (char *)malloc(MAX);
-    fgets(line, MAX, dependf);
-    if (realloc(dependencies, sizeof(dependencies) + sizeof(line)) == NULL) {
-      fprintf(stderr, "Failed to allocate memory\n");
-      return 1;
-    }
-    dependencies[sizeof(dependencies) / MAX] = line;
-  }
-
-  for (int i = 0; i < sizeof(dependencies) / MAX; i++) {
-    pkg_install(dependencies[i]);
-  }
-
-  moveFilesToSystemDirs();
+  installBinary(output);
 
   return 0;
 }
@@ -271,23 +187,24 @@ char pkg_search(char *package) {
 
 int pkg_remove(char *package) {
   char *packagedpm = (char *)malloc(sizeof(package) + 4);
-  packagedpm = strcat(package, ".dpm");
+  packagedpm = strcpy(packagedpm, package);
+  #ifdef _WIN32
+  packagedpm = strcat(package, ".exe");
+  #endif
 
-  if (fopen(packagedpm, "w") == NULL) {
-    fprintf(stderr, "Failed to open file %s\n", packagedpm);
-    return -1;
-  }
-
-  removeIfSameName("lib", "/usr/lib");
-  removeIfSameName("bin", "/usr/bin");
+  #ifdef _WIN32
+  removeBinaryIfExists(packagedpm, "C:\\Program Files\\YourApp\\");
+  #else
+  removeBinaryIfExists(packagedpm, "/usr/local/bin");
+  #endif
 
   free(packagedpm);
   return 0;
 }
 
 int pkg_upgrade(char *package) {
+  pkg_remove(package);
   pkg_install(package);
-  pkg_upgrade(package);
   return 0;
 } 
 

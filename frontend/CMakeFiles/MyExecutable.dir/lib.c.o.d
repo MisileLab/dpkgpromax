@@ -39,10 +39,6 @@ CMakeFiles/MyExecutable.dir/lib.c.o: \
  /usr/include/alloca.h /usr/include/bits/stdlib-float.h \
  /usr/include/string.h /usr/include/bits/types/locale_t.h \
  /usr/include/bits/types/__locale_t.h /usr/include/strings.h \
- /usr/include/errno.h /usr/include/bits/errno.h \
- /usr/include/linux/errno.h /usr/include/asm/errno.h \
- /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
- /home/misile/dpkgpromax/frontend/microtar/src/microtar.h \
  /usr/include/curl/curl.h /usr/include/curl/curlver.h \
  /usr/include/curl/system.h /usr/include/sys/socket.h \
  /usr/include/bits/types/struct_iovec.h /usr/include/bits/socket.h \
@@ -62,4 +58,8 @@ CMakeFiles/MyExecutable.dir/lib.c.o: \
  /usr/include/curl/easy.h /usr/include/curl/multi.h \
  /usr/include/curl/curl.h /usr/include/curl/urlapi.h \
  /usr/include/curl/options.h /usr/include/curl/header.h \
- /usr/include/curl/websockets.h /usr/include/curl/typecheck-gcc.h
+ /usr/include/curl/websockets.h /usr/include/curl/typecheck-gcc.h \
+ /usr/include/unistd.h /usr/include/bits/posix_opt.h \
+ /usr/include/bits/environments.h /usr/include/bits/confname.h \
+ /usr/include/bits/getopt_posix.h /usr/include/bits/getopt_core.h \
+ /usr/include/bits/unistd_ext.h
