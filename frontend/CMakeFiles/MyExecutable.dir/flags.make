@@ -4,7 +4,7 @@
 # compile C with /usr/bin/cc
 C_DEFINES = 
 
-C_INCLUDES = -I/home/misile/dpkgpromax/frontend -I/home/misile/dpkgpromax/frontend/microtar/src
+C_INCLUDES = -I/home/misile/siderepos/dpkgpromax/frontend -I/home/misile/siderepos/dpkgpromax/frontend/microtar/src
 
 C_FLAGS = 
 

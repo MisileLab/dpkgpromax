@@ -1,6 +1,7 @@
 CMakeFiles/MyExecutable.dir/main.c.o: \
- /home/misile/dpkgpromax/frontend/main.c /usr/include/stdc-predef.h \
- /home/misile/dpkgpromax/frontend/lib.h /usr/include/stdio.h \
+ /home/misile/siderepos/dpkgpromax/frontend/main.c \
+ /usr/include/stdc-predef.h \
+ /home/misile/siderepos/dpkgpromax/frontend/lib.h /usr/include/stdio.h \
  /usr/include/bits/libc-header-start.h /usr/include/features.h \
  /usr/include/features-time64.h /usr/include/bits/wordsize.h \
  /usr/include/bits/timesize.h /usr/include/sys/cdefs.h \

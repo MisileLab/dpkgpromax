@@ -1,5 +1,3 @@
-#include <dirent.h>
-#include <ftw.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -79,6 +77,7 @@ void installBinary(const char* binaryPath) {
     char moveCommand[100];
     
 #ifdef _WIN32
+    system("mkdir \"C:\\Program Files\\YourApp\\\"");
     snprintf(moveCommand, sizeof(moveCommand), "%s \"%s\" \"C:\\Program Files\\YourApp\\\"", MOVE_COMMAND, binaryPath);
 #else
     snprintf(moveCommand, sizeof(moveCommand), "%s \"%s\" /usr/local/bin/", MOVE_COMMAND, binaryPath);
@@ -140,23 +139,7 @@ void create_folder(const char* folder_name) {
     }
 }
 
-int pkg_install(char *package) {
-  char *url = (char *)malloc(sizeof(package) + sizeof(URL) + 6);
-  char *output = (char *)malloc(sizeof(package) + 4);
-  sprintf(url, "%s/%s", URL, package);
-  sprintf(output, "%s", package);
-
-  if (downloadFile(url, output) == 1) {
-    fprintf(stderr, "Failed to download file %s\n", url);
-    return 1;
-  };
-  free(url);
-  installBinary(output);
-
-  return 0;
-}
-
-char pkg_search(char *package) {
+int pkg_search(char *package) {
   char *url = (char *)malloc(sizeof(URL) + 7);
   sprintf(url, "%s/files", URL);
 
@@ -175,8 +158,9 @@ char pkg_search(char *package) {
   while (!feof(file)) {
     char *line = (char *)malloc(MAX);
     fgets(line, MAX, file);
-    if (strstr(line, package) != NULL) {
-      printf("found");
+    line[strcspn(line, "\n\r")] = 0;
+    if (strcmp(line, package) == 0) {
+      printf("found\n");
       return 0;
     }
     free(line);
@@ -185,12 +169,25 @@ char pkg_search(char *package) {
   return -1;
 }
 
+int pkg_install(char *package) {
+  if (pkg_search(package) == -1) { printf("Package not found"); return -1; }
+  char *url = (char *)malloc(sizeof(package) + sizeof(URL) + 6);
+  char *output = (char *)malloc(sizeof(package) + 4);
+  sprintf(url, "%s/%s", URL, package);
+  sprintf(output, "%s", package);
+
+  if (downloadFile(url, output) == 1) {
+    fprintf(stderr, "Failed to download file %s\n", url);
+    return 1;
+  };
+  installBinary(output);
+
+  return 0;
+}
+
 int pkg_remove(char *package) {
   char *packagedpm = (char *)malloc(sizeof(package) + 4);
   packagedpm = strcpy(packagedpm, package);
-  #ifdef _WIN32
-  packagedpm = strcat(package, ".exe");
-  #endif
 
   #ifdef _WIN32
   removeBinaryIfExists(packagedpm, "C:\\Program Files\\YourApp\\");

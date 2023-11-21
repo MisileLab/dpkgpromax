@@ -1,5 +1,5 @@
 CMakeFiles/MyExecutable.dir/microtar/src/microtar.c.o: \
- /home/misile/dpkgpromax/frontend/microtar/src/microtar.c \
+ /home/misile/siderepos/dpkgpromax/frontend/microtar/src/microtar.c \
  /usr/include/stdc-predef.h /usr/include/stdio.h \
  /usr/include/bits/libc-header-start.h /usr/include/features.h \
  /usr/include/features-time64.h /usr/include/bits/wordsize.h \
@@ -34,4 +34,4 @@ CMakeFiles/MyExecutable.dir/microtar/src/microtar.c.o: \
  /usr/include/bits/stdlib-float.h /usr/include/string.h \
  /usr/include/bits/types/locale_t.h /usr/include/bits/types/__locale_t.h \
  /usr/include/strings.h \
- /home/misile/dpkgpromax/frontend/microtar/src/microtar.h
+ /home/misile/siderepos/dpkgpromax/frontend/microtar/src/microtar.h
